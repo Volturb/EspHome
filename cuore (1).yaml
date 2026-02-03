@@ -1,0 +1,112 @@
+substitutions:
+
+  Sname: cuore
+  Sfriendly: Cuore Motorizzato
+
+############################################# inizio inizializzazione 
+
+esphome:
+  name: ${Sname}
+  friendly_name: ${Sfriendly}
+
+packages:   # as a list
+
+  - !include zz-wifi.yaml
+  
+  
+esp32:
+  board: esp32-s3-devkitc1-n16r8
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+
+#binary_sensor:
+#  - platform: gpio
+#    pin:
+#      number: GPIO4
+#      mode: INPUT_PULLUP
+#      inverted: true
+#    name: "Pulsante Velocità Massima"
+#    id: pulsante_max
+#    on_press:
+#      - lambda: |-
+#          id(servo_speed).publish_state(1.0);
+
+# PWM per servo 360°
+output:
+  - platform: ledc
+    pin: GPIO08
+    id: servo_pwm
+    frequency: 50 Hz
+
+switch:
+  - platform: template
+    name: "Usa Potenziometro"
+    id: use_pot
+    optimistic: true
+
+
+
+# --- POTENZIOMETRO ANALOGICO ---
+sensor:
+  - platform: adc
+    pin: GPIO1
+    id: pot_value
+    name: "Rotella Velocità"
+    update_interval: 500ms
+    attenuation: 11db
+    filters:
+      - lambda: |-
+          float v = x;  // 0.0 → 1.0
+          float speed = (v * 2.0) - 1.0;  // -1 → +1
+
+          // Deadzone
+          const float deadzone = 0.05;
+          if (fabs(speed) < deadzone) {
+            speed = 0.0;
+          }
+
+          // Usa il potenziometro solo se lo switch è attivo
+          if (id(use_pot).state) {
+            id(servo_speed).publish_state(speed);
+            id(servo_current_speed).publish_state(speed);
+          }
+          
+
+          return v;
+  - platform: template
+    name: "Servo Velocità Attuale"
+    id: servo_current_speed
+    unit_of_measurement: ""
+    update_interval: never
+
+
+# --- SLIDER VELOCITÀ SERVO ---
+number:
+  - platform: template
+    name: "Velocità Servo"
+    id: servo_speed
+    min_value: -1.0
+    max_value: 1.0
+    step: 0.01
+    optimistic: true
+    set_action:
+      - lambda: |-
+          // Se il potenziometro è attivo, ignora lo slider
+          if (id(use_pot).state) {
+            return;
+          }
+
+          float speed = x;
+
+          if (speed > 1.0) speed = 1.0;
+          if (speed < -1.0) speed = -1.0;
+
+          int pulse = 1500 + (speed * 500);
+          float duty = pulse / 20000.0f;
+
+          id(servo_pwm).set_level(duty);
+          id(servo_current_speed).publish_state(speed);
