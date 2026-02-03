@@ -12,6 +12,7 @@
 #          id(servo_speed).publish_state(1.0);
 
 # PWM per servo 360°
+
 output:
   - platform: ledc
     pin: ${SServo}
