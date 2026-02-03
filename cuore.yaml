@@ -1,27 +1,3 @@
-substitutions:
-
-  Sname: cuore
-  Sfriendly: Cuore Motorizzato
-
-############################################# inizio inizializzazione 
-
-esphome:
-  name: ${Sname}
-  friendly_name: ${Sfriendly}
-
-packages:   # as a list
-
-  - !include zz-wifi.yaml
-  
-  
-esp32:
-  board: esp32-s3-devkitc1-n16r8
-  framework:
-    type: esp-idf
-
-logger:
-
-api:
 
 #binary_sensor:
 #  - platform: gpio
