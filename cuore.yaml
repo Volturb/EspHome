@@ -14,7 +14,7 @@
 # PWM per servo 360°
 output:
   - platform: ledc
-    pin: GPIO08
+    pin: [SServo]
     id: servo_pwm
     frequency: 50 Hz
 
