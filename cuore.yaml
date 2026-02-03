@@ -73,7 +73,7 @@ number:
     lambda: |-
       return id(servo_current_speed).state;
   - platform: template
-    name: "Velocità Servo"
+    name: "Velocità Servo _"
     id: servo_speed
     min_value: -1.0
     max_value: 1.0
