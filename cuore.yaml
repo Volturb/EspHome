@@ -14,7 +14,7 @@
 # PWM per servo 360°
 output:
   - platform: ledc
-    pin: [SServo]
+    pin: ${SServo}
     id: servo_pwm
     frequency: 50 Hz
 
@@ -29,7 +29,7 @@ switch:
 # --- POTENZIOMETRO ANALOGICO ---
 sensor:
   - platform: adc
-    pin: GPIO1
+    pin: ${SAnalogico}
     id: pot_value
     name: "Rotella Velocità"
     update_interval: 500ms
