@@ -1,4 +1,9 @@
 
+
+
+
+
+
 #binary_sensor:
 #  - platform: gpio
 #    pin:
@@ -69,7 +74,7 @@ number:
     min_value: -1.0
     max_value: 1.0
     step: 0.01
-    optimistic: true
+    optimistic: false
     lambda: |-
       return id(servo_current_speed).state;
   - platform: template
