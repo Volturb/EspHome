@@ -64,21 +64,12 @@ sensor:
 # --- SLIDER VELOCITÀ SERVO ---
 number:
   - platform: template
-    name: "Velocità Servo (Solo Lettura)"
-    id: servo_speed_readonly
-    min_value: -1.0
-    max_value: 1.0
-    step: 0.01
-    optimistic: true
-    lambda: |-
-      return id(servo_current_speed).state;
-  - platform: template
     name: "Velocità Servo _"
     id: servo_speed
     min_value: -1.0
     max_value: 1.0
     step: 0.01
-    optimistic: true
+    optimistic: true 
     set_action:
       - lambda: |-
           // Se il potenziometro è attivo, ignora lo slider
